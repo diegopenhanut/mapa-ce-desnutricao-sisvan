@@ -29,8 +29,10 @@ var svg = d3.select("body").append("svg")
     
 
 d3.json("ce-municipalities.json", function(error, ce) {
-  svg.append("path")
-      .datum(topojson.feature(ce, ce.objects.municipalities))
+ svg.selectAll(".municipalities")
+      .data(topojson.feature(ce, ce.objects.municipalities).features)
+    .enter().append("path")
+      .attr("class", function(d) { return "municipalities " + d.id; })
       .attr("d", path);
 
 });
