@@ -55,7 +55,41 @@ function mouseout() {
 
 });
 
+function name(d) {
+	return d.name;
+}
+
+function getNameFromMap(municipality){
+	return municipality.properties.name
+}
+
+function GetList(){
+	var output = [];
+	var str = document.getElementById('municipios_list').value;
+	var line = str.split("\n");
+	for (var i = 0; i < line.length; i++){
+		var innerSplit = line[i].split(/\s*;\s*/);
+		var municipio = innerSplit[0].trim();
+		var value = innerSplit[1].trim();
+		var innerObj = {};
+		innerObj.name = municipio;
+		innerObj.value = value;
+		output.push(innerObj);
+	};
+	console.log(output);
+	d3.selectAll(".municipalities")
+      		.data(object, name)
+		.style("fill", "black");
+	return output;
+}
+
 </script>
-<textarea name="municipalities_list" style="width:600px;height:600px" ></textarea>
+
+<textarea id="municipios_list" style="width:200px;height:100px" >FORTALEZA; 123
+CAUCAIA; 240 </textarea>
+
+<button id="get_list_btn" onclick="GetList();">Pegar lista de Municiops</button>
+
+
 </body>
 
