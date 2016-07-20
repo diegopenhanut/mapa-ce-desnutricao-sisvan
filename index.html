@@ -56,7 +56,7 @@ function mouseout() {
 });
 
 function name(d) {
-	return d.name;
+	return d.properties.name;
 }
 
 function getNameFromMap(municipality){
@@ -72,13 +72,14 @@ function GetList(){
 		var municipio = innerSplit[0].trim();
 		var value = innerSplit[1].trim();
 		var innerObj = {};
-		innerObj.name = municipio;
-		innerObj.value = value;
+		innerObj.properties = {};
+		innerObj.properties.name = municipio;
+		innerObj.properties.value = value;
 		output.push(innerObj);
 	};
 	console.log(output);
 	d3.selectAll(".municipalities")
-      		.data(object, name)
+      		.data(output, name)
 		.style("fill", "black");
 	return output;
 }
