@@ -1,101 +1,60 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<head>
+<title>Desnuntrição no Ceará, 2015, SISVANweb</title>
 <style>
+#controles{
+float: left;
+padding: 70px 0;
+height: 600px;
+}
+svg{
+position: auto 
+}
+.navbar-inverse {
+    background-color: #222;
+    border-color: #080808;
+}
 
 </style>
 <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script></script>
 <script src="//d3js.org/topojson.v1.min.js"></script>
+
+<!-- Jquery from google-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> 
+
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+</head>
+
 <body>
-
-<script>
-
-var width = 600,
-    height = 600;
-
-var projection = d3.geo.albers()
-    .center([0, 0])
-    .rotate([39, 5])
-    .parallels([20, 0])
-    .scale(1000 * 5)
-    .translate([width / 2, height / 2]);
-
-var path = d3.geo.path()
-    .projection(projection);
-
-var svg = d3.select("body").append("svg")
-    .attr("width", width)
-    .attr("height", height);
-    
-
-d3.json("ce-municipalities.json", function(error, ce) {
- svg.selectAll(".municipalities")
-      .data(topojson.feature(ce, ce.objects.municipalities).features)
-    .enter().append("path")
-      .attr("class", function(d) { return "municipalities " + d.id; })
-      .attr("d", path)
-      .style("fill", "white")
-      .style("stroke", "black")
-    .append("title")
-       .attr("x", 10)
-       .attr("dy", ".35em")
-       .text(function(d) { return d.properties.name; });
-
-var node = svg.selectAll(".municipalities")
-      .on("mouseover", mouseover)
-      .on("mouseout", mouseout)
+	<div id="navbar navbar-inverse navbar-fixed-top"> 
+		<h1>Porcentagem de Adultos Desnutridos em Atendimentos Registrados no SISVANweb, 2015</h1>
+	</div>
 
 
-function mouseover() {
- d3.select(this).transition().duration(1000).style('fill', "red");
-}
+<div id="controles" >
 
-function mouseout() {
- d3.select(this).transition().duration(1000).style('fill', "white");
-}
-
-});
-
-function name(d) {
-	return d.properties.name;
-}
-
-function getNameFromMap(municipality){
-	return municipality.properties.name
-}
-
-var color = d3.scale.threshold()
-	    .domain([1, 2, 3])
-	    .range(["green", "yellow", "orange", "red"]);
-
-function GetList(){
-	var output = [];
-	var str = document.getElementById('municipios_list').value;
-	var line = str.split("\n");
-	for (var i = 0; i < line.length; i++){
-		var innerSplit = line[i].split(/\s*;\s*/);
-		var municipio = innerSplit[0].trim();
-		var value = innerSplit[1].trim();
-		var innerObj = {};
-		innerObj.properties = {};
-		innerObj.properties.name = municipio;
-		innerObj.properties.value = value;
-		output.push(innerObj);
-	};
-	console.log(output);
-	d3.selectAll(".municipalities")
-      		.data(output, name)
-		.style("fill", function(d){
-			mycolor = d.properties.value;
-			console.log(mycolor);
-			return color(mycolor);
-		});
-
-	return output;
-}
-
-</script>
-
-<textarea id="municipios_list" style="width:200px;height:100px" >ABAIARA	;	2.74
+<button id="get_list_btn" onclick="GetList();">Colorir mapa</button>
+</br>
+Pontos de Corte
+</br>
+<input type="text" id="limits_list" value="1; 2; 3; 4"</input>
+</br>
+Cores para pontos de corte
+</br>
+<input type="text" id="colors_list" value="blue; green; yellow; orange; red"</input>
+</br>
+Lista com municipios e Valores
+</br>
+<textarea id="municipios_list" style="width:200px;height:200px" >ABAIARA	;	2.74
 ACARAPE	;	2.23
 ACARAÚ	;	1.75
 ACOPIARA	;	3.86
@@ -280,8 +239,112 @@ VARJOTA	;	4.39
 VÁRZEA ALEGRE	;	2.8
 VIÇOSA DO CEARÁ	;	1.97</textarea>
 
-<button id="get_list_btn" onclick="GetList();">Pegar lista de Municiops</button>
 
+
+</div>
+
+<script>
+
+var width = 600,
+    height = 600;
+
+var projection = d3.geo.albers()
+    .center([0, 0])
+    .rotate([39, 5])
+    .parallels([20, 0])
+    .scale(1000 * 5)
+    .translate([width / 2, height / 2]);
+
+var path = d3.geo.path()
+    .projection(projection);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+    
+
+d3.json("ce-municipalities.json", function(error, ce) {
+ svg.selectAll(".municipalities")
+      .data(topojson.feature(ce, ce.objects.municipalities).features)
+    .enter().append("path")
+      .attr("class", function(d) { return "municipalities " + d.id; })
+      .attr("d", path)
+      .style("fill", "white")
+      .style("stroke", "black")
+    .append("title")
+       .attr("x", 10)
+       .attr("dy", ".35em")
+       .text(function(d) { return d.properties.name; });
+
+
+});
+
+function name(d) {
+	return d.properties.name;
+}
+
+//function getNameFromMap(municipality){
+//	return municipality.properties.name
+//}
+
+var limits = document.getElementById("limits_list").value.split(/\s*;\s*/);
+var colors = document.getElementById("colors_list").value.split(/\s*;\s*/);
+
+var color = d3.scale.threshold()
+	    .domain(limits)
+	    .range(colors);
+
+function GetList(){
+	var output = [];
+	var str = document.getElementById('municipios_list').value;
+	var line = str.split("\n");
+	for (var i = 0; i < line.length; i++){
+		var innerSplit = line[i].split(/\s*;\s*/);
+		var municipio = innerSplit[0].trim();
+		var value = innerSplit[1].trim();
+		var innerObj = {};
+		innerObj.properties = {};
+		innerObj.properties.name = municipio;
+		innerObj.properties.value = value;
+		output.push(innerObj);
+	};
+	console.log(output);
+	d3.selectAll(".municipalities")
+      		.data(output, name)
+		.style("fill", function(d){
+			mycolor = d.properties.value;
+			return color(mycolor);
+		});
+	// Create Legend
+	for (var i = 0; i < colors.length; i++){
+		var legText;
+
+		svg.append("rect")
+			.attr("width", 20)
+			.attr("height", 10)
+			.attr("x", 50)
+			.attr("y", (i * 15) + 10 )
+			.style("fill", colors[i])
+			.style("stroke", "black")
+		
+		if (i == 0){
+			legText = "< " + limits[i];
+		} else if (i === (colors.length - 1)){      
+			legText = "> " + limits[i - 1];
+		} else {
+			legText = limits[i-1] + " - " + limits[i];
+		}
+		
+		svg.append("text")
+			.attr("x", 80)
+			.attr("y", (i * 15) + 20 )
+			.text(legText)
+	}
+
+	return output;
+}
+
+</script>
 
 </body>
 
