@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <head>
-<title>Desnuntrição no Ceará, 2015, SISVANweb</title>
+<title>Desnutrição no Ceará, 2015, SISVANweb</title>
 <style>
 #controles{
 float: left;
@@ -328,11 +328,11 @@ function GetList(){
 			.style("stroke", "black")
 		
 		if (i == 0){
-			legText = "< " + limits[i];
+			legText = "< " + limits[i] + "%";
 		} else if (i === (colors.length - 1)){      
-			legText = "> " + limits[i - 1];
+			legText = "> " + limits[i - 1] + "%";
 		} else {
-			legText = limits[i-1] + " - " + limits[i];
+			legText = limits[i-1] + "% - " + limits[i] + "%";
 		}
 		
 		svg.append("text")
